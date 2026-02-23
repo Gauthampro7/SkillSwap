@@ -13,9 +13,13 @@ CREATE TABLE IF NOT EXISTS public.users (
   picture TEXT,
   university TEXT DEFAULT '',
   location TEXT DEFAULT '',
+  bio TEXT DEFAULT '',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
+
+-- Add bio column if upgrading from an older schema
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS bio TEXT DEFAULT '';
 
 -- Create skills table
 CREATE TABLE IF NOT EXISTS public.skills (

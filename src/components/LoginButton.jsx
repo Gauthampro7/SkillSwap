@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { LogIn, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-export const LoginButton = () => {
+export const LoginButton = ({ onOpenProfile }) => {
   const { user, signInWithGoogle, signOut, loading } = useAuth();
 
   if (loading) {
@@ -16,10 +16,12 @@ export const LoginButton = () => {
   if (user) {
     return (
       <div className="flex items-center gap-3">
-        <motion.div
+        <motion.button
+          type="button"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex items-center gap-2 glass px-4 py-2 rounded-lg"
+          onClick={onOpenProfile}
+          className="flex items-center gap-2 glass px-4 py-2 rounded-lg hover:bg-accent-theme/10 transition-colors text-left"
         >
           {user.user_metadata?.picture ? (
             <img
@@ -32,10 +34,10 @@ export const LoginButton = () => {
               <User size={16} className="text-accent-theme" />
             </div>
           )}
-          <span className="text-sm font-medium text-theme hidden sm:block">
+          <span className="text-sm font-medium text-theme hidden sm:block truncate">
             {user.user_metadata?.name || user.email}
           </span>
-        </motion.div>
+        </motion.button>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

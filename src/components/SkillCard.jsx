@@ -11,7 +11,7 @@ const CATEGORY_CONFIG = {
 
 const DEFAULT_CATEGORY = { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', Icon: Layers };
 
-export const SkillCard = ({ skill, index, onRequestTrade, isSaved, onSave, onUnsave, onUserClick }) => {
+export const SkillCard = ({ skill, index, onRequestTrade, onCardClick, isSaved, onSave, onUnsave, onUserClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -42,6 +42,10 @@ export const SkillCard = ({ skill, index, onRequestTrade, isSaved, onSave, onUns
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={handleMouseLeave}
       onMouseMove={handleMouseMove}
+      onClick={() => onCardClick?.(skill)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === 'Enter' && onCardClick?.(skill)}
       className={`glass-card rounded-2xl p-6 cursor-pointer group relative overflow-hidden flex flex-col ${
         skill.type === 'Offering' ? 'card-offering' : 'card-seeking'
       }`}
@@ -142,7 +146,7 @@ export const SkillCard = ({ skill, index, onRequestTrade, isSaved, onSave, onUns
           whileTap={{ scale: 0.95 }}
           onClick={(e) => {
             e.stopPropagation();
-            onRequestTrade(skill);
+            onRequestTrade?.(skill);
           }}
           className="btn-gradient flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-white font-semibold w-full"
         >

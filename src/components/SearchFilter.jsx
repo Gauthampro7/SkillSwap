@@ -5,11 +5,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 const CATEGORIES = ['All', 'Tech', 'Arts', 'Academic', 'Life Skills'];
 const TYPES = ['All', 'Offering', 'Seeking'];
 
-export const SearchFilter = ({ onSearch, onFilterChange, universities = [], selectedUniversity = 'All' }) => {
+export const SearchFilter = ({
+  onSearch,
+  onFilterChange,
+  universities = [],
+  selectedUniversity: controlledUniversity = undefined,
+  selectedCategory: controlledCategory = undefined,
+  selectedType: controlledType = undefined,
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedType, setSelectedType] = useState('All');
+  const [internalCategory, setInternalCategory] = useState('All');
+  const [internalType, setInternalType] = useState('All');
+  const [internalUniversity, setInternalUniversity] = useState('All');
   const [showFilters, setShowFilters] = useState(false);
+
+  const selectedCategory = controlledCategory !== undefined ? controlledCategory : internalCategory;
+  const selectedType = controlledType !== undefined ? controlledType : internalType;
+  const selectedUniversity = controlledUniversity !== undefined ? controlledUniversity : internalUniversity;
 
   const handleSearchChange = (value) => {
     setSearchQuery(value);
@@ -17,23 +29,25 @@ export const SearchFilter = ({ onSearch, onFilterChange, universities = [], sele
   };
 
   const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
+    if (controlledCategory === undefined) setInternalCategory(category);
     onFilterChange({ category, type: selectedType, university: selectedUniversity });
   };
 
   const handleTypeChange = (type) => {
-    setSelectedType(type);
+    if (controlledType === undefined) setInternalType(type);
     onFilterChange({ category: selectedCategory, type, university: selectedUniversity });
   };
 
   const handleUniversityChange = (university) => {
+    if (controlledUniversity === undefined) setInternalUniversity(university);
     onFilterChange({ category: selectedCategory, type: selectedType, university });
   };
 
   const clearFilters = () => {
     setSearchQuery('');
-    setSelectedCategory('All');
-    setSelectedType('All');
+    if (controlledCategory === undefined) setInternalCategory('All');
+    if (controlledType === undefined) setInternalType('All');
+    if (controlledUniversity === undefined) setInternalUniversity('All');
     onSearch('');
     onFilterChange({ category: 'All', type: 'All', university: 'All' });
   };

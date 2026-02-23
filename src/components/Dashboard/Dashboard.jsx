@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, Briefcase, Send, Inbox, Compass, Bookmark } from 'lucide-react';
 import { MySkills } from './MySkills';
@@ -6,6 +6,9 @@ import { MyRequests } from './MyRequests';
 import { IncomingRequests } from './IncomingRequests';
 import { SavedSkills } from './SavedSkills';
 import { useAuth } from '../../contexts/AuthContext';
+import { skillsService } from '../../services/skillsService';
+import { savedSkillsService } from '../../services/savedSkillsService';
+import { tradesService } from '../../services/tradesService';
 
 const TABS = [
   { id: 'my-skills', label: 'My Skills', icon: Briefcase },
@@ -17,6 +20,19 @@ const TABS = [
 export function Dashboard({ onGoToBrowse, onRequestTrade, onUnsave, refreshSavedIds }) {
   const { isAuthenticated } = useAuth();
   const [tab, setTab] = useState('my-skills');
+  const [stats, setStats] = useState({ mySkills: 0, saved: 0, sent: 0, incoming: 0 });
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    Promise.all([
+      skillsService.getMySkills().then((d) => d.length),
+      savedSkillsService.getSavedIds().then((d) => d.length),
+      tradesService.getMyRequests().then((d) => d.length),
+      tradesService.getIncomingRequests().then((d) => d.length),
+    ])
+      .then(([mySkills, saved, sent, incoming]) => setStats({ mySkills, saved, sent, incoming }))
+      .catch(() => {});
+  }, [isAuthenticated, tab]);
 
   if (!isAuthenticated) {
     return (
@@ -44,6 +60,27 @@ export function Dashboard({ onGoToBrowse, onRequestTrade, onUnsave, refreshSaved
           <Compass size={18} />
           Browse skills
         </motion.button>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {[
+          { key: 'my-skills', label: 'My skills', value: stats.mySkills, icon: Briefcase },
+          { key: 'saved', label: 'Saved', value: stats.saved, icon: Bookmark },
+          { key: 'my-requests', label: 'Sent', value: stats.sent, icon: Send },
+          { key: 'incoming', label: 'Received', value: stats.incoming, icon: Inbox },
+        ].map(({ key, label, value, icon: Icon }) => (
+          <motion.div
+            key={key}
+            whileHover={{ scale: 1.02 }}
+            className="glass rounded-xl p-4"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <Icon size={18} className="text-accent-theme" />
+              <span className="text-sm font-medium text-theme-secondary">{label}</span>
+            </div>
+            <p className="text-2xl font-bold text-theme">{value}</p>
+          </motion.div>
+        ))}
       </div>
 
       <div className="flex flex-wrap gap-2 border-b border-theme pb-4">

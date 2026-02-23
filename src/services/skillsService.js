@@ -53,7 +53,7 @@ export const skillsService = {
   async getProfile(userId) {
     const { data: user, error: userError } = await supabase
       .from('users')
-      .select('id, name, email, picture, university, location')
+      .select('id, name, email, picture, university, location, bio')
       .eq('id', userId)
       .single();
 
@@ -78,6 +78,7 @@ export const skillsService = {
         picture: user.picture,
         university: user.university,
         location: user.location,
+        bio: user.bio || '',
       },
       skills: (userSkills || []).map((s) => ({
         id: s.id,
@@ -254,6 +255,25 @@ export const skillsService = {
   async requestTrade(skillId, message = '') {
     const { tradesService } = await import('./tradesService');
     return tradesService.create(skillId, message);
+  },
+
+  /** Update current user profile (university, location, bio) */
+  async updateProfile(updates) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('You must be logged in to update your profile');
+
+    const { error } = await supabase
+      .from('users')
+      .update({
+        ...(updates.university !== undefined && { university: updates.university }),
+        ...(updates.location !== undefined && { location: updates.location }),
+        ...(updates.bio !== undefined && { bio: updates.bio }),
+      })
+      .eq('id', user.id);
+
+    if (error) throw new Error(error.message);
   },
 
   // Get my skills (for dashboard)

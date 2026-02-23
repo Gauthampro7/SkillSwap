@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, MapPin, Briefcase, Loader2 } from 'lucide-react';
 import { skillsService } from '../services/skillsService';
 
-export const ProfileModal = ({ isOpen, onClose, userId }) => {
+export const ProfileModal = ({ isOpen, onClose, userId, currentUserId, onEditProfile }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -74,7 +74,7 @@ export const ProfileModal = ({ isOpen, onClose, userId }) => {
                         <User size={32} className="text-accent-theme" />
                       </div>
                     )}
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <h2 className="text-xl font-bold text-theme">{profile.user.name}</h2>
                       {(profile.user.university || profile.user.location) && (
                         <div className="flex items-center gap-1 text-theme-secondary text-sm mt-1">
@@ -82,8 +82,21 @@ export const ProfileModal = ({ isOpen, onClose, userId }) => {
                           {[profile.user.university, profile.user.location].filter(Boolean).join(' · ')}
                         </div>
                       )}
+                      {currentUserId === profile.user.id && onEditProfile && (
+                        <button
+                          type="button"
+                          onClick={onEditProfile}
+                          className="mt-2 text-sm font-medium text-accent-theme hover:underline"
+                        >
+                          Edit profile
+                        </button>
+                      )}
                     </div>
                   </div>
+
+                  {profile.user.bio && (
+                    <p className="text-theme-secondary text-sm whitespace-pre-wrap">{profile.user.bio}</p>
+                  )}
 
                   <div>
                     <h3 className="text-sm font-semibold text-theme-secondary uppercase tracking-wide mb-3 flex items-center gap-2">

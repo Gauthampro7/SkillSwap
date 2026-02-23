@@ -15,11 +15,13 @@ import { savedSkillsService } from './services/savedSkillsService';
 import { tradesService } from './services/tradesService';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { ProfileModal } from './components/ProfileModal';
+import { SkillDetailModal } from './components/SkillDetailModal';
+import { EditProfileModal } from './components/EditProfileModal';
 import { Sparkles, Plus, Loader2, LayoutDashboard, Compass, Zap, Users, ArrowRight } from 'lucide-react';
 import { useAuth } from './contexts/AuthContext';
 
 function AppContent() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user: currentUser } = useAuth();
   const [view, setView] = useState('browse'); // 'browse' | 'dashboard'
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,9 @@ function AppContent() {
   const [savedIds, setSavedIds] = useState([]);
   const [profileUserId, setProfileUserId] = useState(null);
   const [pendingIncomingCount, setPendingIncomingCount] = useState(0);
+  const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'oldest' | 'title'
+  const [detailSkill, setDetailSkill] = useState(null);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   // Fetch skills from API
   useEffect(() => {
@@ -82,6 +87,16 @@ function AppContent() {
       .catch(() => setPendingIncomingCount(0));
   }, [isAuthenticated, view]);
 
+  // Open skill detail from hash (#skill-<id>)
+  useEffect(() => {
+    const hash = window.location.hash;
+    const match = hash && hash.startsWith('#skill-') && hash.slice(7);
+    if (match && skills.length > 0) {
+      const skill = skills.find((s) => s.id === match);
+      if (skill) setDetailSkill(skill);
+    }
+  }, [skills]);
+
   const universities = useMemo(() => {
     const set = new Set();
     skills.forEach((s) => {
@@ -92,14 +107,27 @@ function AppContent() {
   }, [skills]);
 
   const filteredSkills = useMemo(() => {
+    let list = skills;
     if (filters.university && filters.university !== 'All') {
-      return skills.filter((s) => {
+      list = list.filter((s) => {
         const u = s.userData?.university || s.userData?.location;
         return u && String(u).trim() === filters.university;
       });
     }
-    return skills;
+    return list;
   }, [skills, filters.university]);
+
+  const sortedSkills = useMemo(() => {
+    const list = [...filteredSkills];
+    if (sortBy === 'newest') {
+      list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortBy === 'oldest') {
+      list.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    } else if (sortBy === 'title') {
+      list.sort((a, b) => (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' }));
+    }
+    return list;
+  }, [filteredSkills, sortBy]);
 
   const handleOpenRequestModal = (skill) => {
     setSkillForRequest(skill);
@@ -213,7 +241,7 @@ function AppContent() {
                   )}
                 </motion.button>
               )}
-              <LoginButton />
+              <LoginButton onOpenProfile={() => currentUser?.id && setProfileUserId(currentUser.id)} />
               <ThemeSelector />
             </motion.div>
           </div>
@@ -305,29 +333,65 @@ function AppContent() {
             onSearch={setSearchQuery}
             onFilterChange={setFilters}
             universities={universities}
+            selectedCategory={filters.category}
+            selectedType={filters.type}
             selectedUniversity={filters.university}
           />
         </motion.div>
 
-        {/* Results Count and Create Button */}
+        {/* Quick category chips */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          className="mb-6 flex flex-wrap items-center gap-2"
+        >
+          <span className="text-sm text-theme-secondary mr-1">Quick filter:</span>
+          {['Tech', 'Arts', 'Academic', 'Life Skills'].map((cat) => (
+            <motion.button
+              key={cat}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setFilters((prev) => ({ ...prev, category: prev.category === cat ? 'All' : cat }))}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                filters.category === cat ? 'bg-accent-theme text-white' : 'glass text-theme hover:bg-accent-theme/10'
+              }`}
+            >
+              {cat}
+            </motion.button>
+          ))}
+        </motion.div>
+
+        {/* Results Count, Sort, and Create Button */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="mb-6 flex items-center justify-between"
+          className="mb-6 flex flex-wrap items-center justify-between gap-4"
         >
           <p className="text-theme-secondary">
-            {loading ? 'Loading...' : `${filteredSkills.length} ${filteredSkills.length === 1 ? 'skill' : 'skills'} found`}
+            {loading ? 'Loading...' : `${sortedSkills.length} ${sortedSkills.length === 1 ? 'skill' : 'skills'} found`}
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 glass px-4 py-2 rounded-lg text-theme hover:bg-accent-theme/10 transition-colors font-medium"
-          >
-            <Plus size={18} />
-            Create Skill
-          </motion.button>
+          <div className="flex items-center gap-3">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="glass px-3 py-2 rounded-lg text-theme text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-theme"
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="title">Title A–Z</option>
+            </select>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsCreateModalOpen(true)}
+              className="flex items-center gap-2 glass px-4 py-2 rounded-lg text-theme hover:bg-accent-theme/10 transition-colors font-medium"
+            >
+              <Plus size={18} />
+              Create Skill
+            </motion.button>
+          </div>
         </motion.div>
 
         {/* Error State */}
@@ -349,14 +413,15 @@ function AppContent() {
         )}
 
         {/* Skills Grid */}
-        {!loading && filteredSkills.length > 0 ? (
+        {!loading && sortedSkills.length > 0 ? (
           <BentoGrid>
-            {filteredSkills.map((skill, index) => (
+            {sortedSkills.map((skill, index) => (
               <SkillCard
                 key={skill.id}
                 skill={skill}
                 index={index}
                 onRequestTrade={handleOpenRequestModal}
+                onCardClick={() => setDetailSkill(skill)}
                 isSaved={savedIds.includes(skill.id)}
                 onSave={isAuthenticated ? handleSave : undefined}
                 onUnsave={isAuthenticated ? handleUnsave : undefined}
@@ -394,6 +459,26 @@ function AppContent() {
         isOpen={!!profileUserId}
         onClose={() => setProfileUserId(null)}
         userId={profileUserId}
+        currentUserId={currentUser?.id}
+        onEditProfile={() => { setProfileUserId(null); setIsEditProfileOpen(true); }}
+      />
+
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        onSuccess={() => setIsEditProfileOpen(false)}
+      />
+
+      <SkillDetailModal
+        isOpen={!!detailSkill}
+        onClose={() => setDetailSkill(null)}
+        skill={detailSkill}
+        onRequestTrade={handleOpenRequestModal}
+        isSaved={detailSkill ? savedIds.includes(detailSkill.id) : false}
+        onSave={isAuthenticated ? handleSave : undefined}
+        onUnsave={isAuthenticated ? handleUnsave : undefined}
+        onUserClick={(user) => user?.id && setProfileUserId(user.id)}
+        isAuthenticated={isAuthenticated}
       />
 
       {/* Trade success Modal */}
