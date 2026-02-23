@@ -83,7 +83,6 @@ The built files will be in the `dist` directory.
 ├── index.html
 ├── package.json
 ├── supabase-schema.sql
-├── supabase-migration-*.sql
 └── README.md
 ```
 

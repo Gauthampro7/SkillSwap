@@ -1,5 +1,6 @@
 -- SkillSwap Database Schema for Supabase
--- Run this SQL in your Supabase SQL Editor
+-- Single file: run this entire script in the Supabase SQL Editor for a fresh project.
+-- Creates: users, skills, trade_requests, saved_skills + RLS, indexes, triggers.
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
