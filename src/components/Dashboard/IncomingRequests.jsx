@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Inbox, Check, X, Loader2, CheckCircle } from 'lucide-react';
+import { Inbox, Check, X, Loader2, CheckCircle, MessageCircle } from 'lucide-react';
 import { tradesService } from '../../services/tradesService';
 
-export function IncomingRequests() {
+export function IncomingRequests({ onOpenChat }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -184,24 +184,35 @@ export function IncomingRequests() {
                     </p>
                     <p className="text-sm text-theme-secondary capitalize">{req.status}</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {req.status === 'accepted' && (
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => handleMarkCompleted(req.id)}
-                        disabled={completing === req.id}
-                        className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 text-sm font-medium disabled:opacity-50 flex items-center gap-1"
-                      >
-                        {completing === req.id ? (
-                          <Loader2 size={14} className="animate-spin" />
-                        ) : (
-                          <>
-                            <CheckCircle size={14} />
-                            Mark completed
-                          </>
-                        )}
-                      </motion.button>
+                      <>
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => onOpenChat?.(req)}
+                          className="px-3 py-1.5 rounded-lg bg-accent-theme/20 text-accent-theme text-sm font-medium flex items-center gap-1"
+                        >
+                          <MessageCircle size={14} />
+                          Message
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => handleMarkCompleted(req.id)}
+                          disabled={completing === req.id}
+                          className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 text-sm font-medium disabled:opacity-50 flex items-center gap-1"
+                        >
+                          {completing === req.id ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : (
+                            <>
+                              <CheckCircle size={14} />
+                              Mark completed
+                            </>
+                          )}
+                        </motion.button>
+                      </>
                     )}
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${

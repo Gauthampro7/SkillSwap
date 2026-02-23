@@ -185,3 +185,46 @@ CREATE POLICY "Users can insert own saved skills" ON public.saved_skills
 
 CREATE POLICY "Users can delete own saved skills" ON public.saved_skills
   FOR DELETE USING (auth.uid() = user_id);
+
+-- Trade chat: messages between requester and skill owner for an accepted trade
+CREATE TABLE IF NOT EXISTS public.trade_chat_messages (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  trade_request_id UUID REFERENCES public.trade_requests(id) ON DELETE CASCADE NOT NULL,
+  sender_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
+  content TEXT NOT NULL CHECK (char_length(content) > 0 AND char_length(content) <= 2000),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_trade_chat_messages_trade_request_id ON public.trade_chat_messages(trade_request_id);
+CREATE INDEX IF NOT EXISTS idx_trade_chat_messages_created_at ON public.trade_chat_messages(created_at ASC);
+
+ALTER TABLE public.trade_chat_messages ENABLE ROW LEVEL SECURITY;
+
+-- Only the two parties (requester or skill owner) can read messages for that trade
+CREATE POLICY "Trade parties can view chat messages" ON public.trade_chat_messages
+  FOR SELECT USING (
+    auth.uid() = sender_id
+    OR EXISTS (
+      SELECT 1 FROM public.trade_requests tr
+      WHERE tr.id = trade_chat_messages.trade_request_id
+      AND (tr.requester_id = auth.uid() OR EXISTS (
+        SELECT 1 FROM public.skills s WHERE s.id = tr.skill_id AND s.user_id = auth.uid()
+      ))
+    )
+  );
+
+-- Only the two parties can send; sender_id must be self
+CREATE POLICY "Trade parties can send chat messages" ON public.trade_chat_messages
+  FOR INSERT WITH CHECK (
+    auth.uid() = sender_id
+    AND EXISTS (
+      SELECT 1 FROM public.trade_requests tr
+      WHERE tr.id = trade_chat_messages.trade_request_id
+      AND tr.status = 'accepted'
+      AND (tr.requester_id = auth.uid() OR EXISTS (
+        SELECT 1 FROM public.skills s WHERE s.id = tr.skill_id AND s.user_id = auth.uid()
+      ))
+    )
+  );
+
+-- Optional: enable Realtime for live chat (Supabase Dashboard → Database → Replication → add trade_chat_messages)

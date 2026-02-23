@@ -87,14 +87,19 @@ function AppContent() {
       .catch(() => setPendingIncomingCount(0));
   }, [isAuthenticated, view]);
 
-  // Open skill detail from hash (#skill-<id>)
+  // Open skill detail from hash (#skill-<id>); react to both skills load and hash changes
   useEffect(() => {
-    const hash = window.location.hash;
-    const match = hash && hash.startsWith('#skill-') && hash.slice(7);
-    if (match && skills.length > 0) {
-      const skill = skills.find((s) => s.id === match);
-      if (skill) setDetailSkill(skill);
-    }
+    const applyHash = () => {
+      const hash = window.location.hash;
+      const match = hash && hash.startsWith('#skill-') && hash.slice(7);
+      if (match && skills.length > 0) {
+        const skill = skills.find((s) => s.id === match);
+        if (skill) setDetailSkill(skill);
+      }
+    };
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
   }, [skills]);
 
   const universities = useMemo(() => {

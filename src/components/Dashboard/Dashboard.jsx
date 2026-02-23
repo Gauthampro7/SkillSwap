@@ -5,6 +5,7 @@ import { MySkills } from './MySkills';
 import { MyRequests } from './MyRequests';
 import { IncomingRequests } from './IncomingRequests';
 import { SavedSkills } from './SavedSkills';
+import { TradeChatModal } from '../TradeChatModal';
 import { useAuth } from '../../contexts/AuthContext';
 import { skillsService } from '../../services/skillsService';
 import { savedSkillsService } from '../../services/savedSkillsService';
@@ -18,9 +19,10 @@ const TABS = [
 ];
 
 export function Dashboard({ onGoToBrowse, onRequestTrade, onUnsave, refreshSavedIds }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user: currentUser } = useAuth();
   const [tab, setTab] = useState('my-skills');
   const [stats, setStats] = useState({ mySkills: 0, saved: 0, sent: 0, incoming: 0 });
+  const [chatTradeRequest, setChatTradeRequest] = useState(null);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -32,7 +34,7 @@ export function Dashboard({ onGoToBrowse, onRequestTrade, onUnsave, refreshSaved
     ])
       .then(([mySkills, saved, sent, incoming]) => setStats({ mySkills, saved, sent, incoming }))
       .catch(() => {});
-  }, [isAuthenticated, tab]);
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) {
     return (
@@ -114,8 +116,19 @@ export function Dashboard({ onGoToBrowse, onRequestTrade, onUnsave, refreshSaved
           refreshSavedIds={refreshSavedIds}
         />
       )}
-      {tab === 'my-requests' && <MyRequests />}
-      {tab === 'incoming' && <IncomingRequests />}
+      {tab === 'my-requests' && (
+        <MyRequests onOpenChat={setChatTradeRequest} />
+      )}
+      {tab === 'incoming' && (
+        <IncomingRequests onOpenChat={setChatTradeRequest} />
+      )}
+
+      <TradeChatModal
+        isOpen={!!chatTradeRequest}
+        onClose={() => setChatTradeRequest(null)}
+        tradeRequest={chatTradeRequest}
+        currentUserId={currentUser?.id}
+      />
     </div>
   );
 }
