@@ -19,6 +19,7 @@ import { Dashboard } from './components/Dashboard/Dashboard';
 import { ProfileModal } from './components/ProfileModal';
 import { SkillDetailModal } from './components/SkillDetailModal';
 import { EditProfileModal } from './components/EditProfileModal';
+import confetti from 'canvas-confetti';
 import { Sparkles, Plus, Loader2, LayoutDashboard, Compass, Zap, Users, ArrowRight } from 'lucide-react';
 import { useAuth } from './contexts/AuthContext';
 
@@ -43,6 +44,53 @@ function AppContent() {
   const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'oldest' | 'title'
   const [detailSkill, setDetailSkill] = useState(null);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [toast, setToast] = useState(null);
+  const footerClicks = useRef(0);
+  const footerClickReset = useRef(null);
+  const konamiRef = useRef([]);
+  const prevGodMode = useRef(godMode);
+
+  // Confetti + console secret when Ultra activates (only on toggle from off→on, not on page load)
+  useEffect(() => {
+    const prev = prevGodMode.current;
+    prevGodMode.current = godMode;
+    if (godMode && prev === false) {
+      confetti({ particleCount: 80, spread: 100, origin: { y: 0.4 }, colors: ['#6366f1', '#a855f7', '#06b6d4', '#10b981', '#f59e0b'] });
+      setTimeout(() => confetti({ particleCount: 40, spread: 60, origin: { x: 0.2, y: 0.6 }, colors: ['#ec4899', '#8b5cf6'] }), 200);
+      setTimeout(() => confetti({ particleCount: 40, spread: 60, origin: { x: 0.8, y: 0.6 }, colors: ['#06b6d4', '#10b981'] }), 400);
+      if (typeof console !== 'undefined' && console.log) {
+        console.log('%c✨ ULTRA MODE UNLOCKED ✨', 'font-size: 20px; font-weight: bold; color: #a855f7;');
+        console.log('%cHidden treasures: Try the Konami code (↑↑↓↓←→←→BA) or click the footer 7 times!', 'font-size: 12px; color: #06b6d4;');
+      }
+    }
+  }, [godMode]);
+
+  // Konami code easter egg
+  useEffect(() => {
+    const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+    const onKey = (e) => {
+      const next = konami[konamiRef.current.length];
+      if (e.code === next) {
+        konamiRef.current.push(e.code);
+        if (konamiRef.current.length === konami.length) {
+          konamiRef.current = [];
+          setToast({ msg: '🎮 Treasure: Konami Master!', id: Date.now() });
+          if (godMode) confetti({ particleCount: 30, spread: 70, origin: { y: 0.5 } });
+        }
+      } else {
+        konamiRef.current = [];
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [godMode]);
+
+  // Toast auto-dismiss
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3500);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   // Fetch skills from API
   useEffect(() => {
@@ -202,6 +250,17 @@ function AppContent() {
     }
   };
 
+  const handleFooterClick = () => {
+    footerClicks.current += 1;
+    if (footerClickReset.current) clearTimeout(footerClickReset.current);
+    if (footerClicks.current >= 7) {
+      footerClicks.current = 0;
+      setToast({ msg: '🏆 Treasure: Footer Guardian!', id: Date.now() });
+      if (godMode) confetti({ particleCount: 25, spread: 50, origin: { y: 0.9 } });
+    }
+    footerClickReset.current = setTimeout(() => { footerClicks.current = 0; }, 3000);
+  };
+
   return (
     <div className={`min-h-screen bg-theme transition-colors duration-300 relative ${godMode ? 'god-mode' : ''}`}>
       {/* Ultra mode effects (dynamic bg, particles, ambient audio) */}
@@ -217,7 +276,7 @@ function AppContent() {
         <motion.button
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 glass px-4 py-2 rounded-full text-sm font-semibold text-theme border border-accent-theme/40 shadow-lg hover:bg-accent-theme/10 transition-colors"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 glass px-4 py-2 rounded-full text-sm font-semibold text-theme border border-accent-theme/40 shadow-lg hover:bg-accent-theme/10 transition-colors ultra-rainbow-border"
           onClick={() => setGodMode(false)}
           aria-label="Disable Ultra mode"
         >
@@ -225,6 +284,30 @@ function AppContent() {
           Ultra
         </motion.button>
       )}
+
+      {/* Toast for treasures */}
+      {toast && (
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[60] px-5 py-3 rounded-2xl glass border-2 border-accent-theme/50 shadow-xl text-theme font-bold text-center text-sm sm:text-base"
+        >
+          {toast.msg}
+        </motion.div>
+      )}
+
+      {/* Hidden footer treasure (7 clicks) */}
+      <footer
+        className="py-6 text-center text-theme-secondary text-xs cursor-default select-none"
+        onClick={handleFooterClick}
+        onKeyDown={(e) => e.key === 'Enter' && handleFooterClick()}
+        role="button"
+        tabIndex={0}
+        aria-label="Footer"
+      >
+        SkillSwap · Exchange skills with students
+      </footer>
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass border-b border-theme backdrop-blur-xl relative">
@@ -326,7 +409,7 @@ function AppContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-theme mb-4 leading-tight break-words px-1"
+            className={`text-4xl sm:text-5xl lg:text-6xl font-extrabold text-theme mb-4 leading-tight break-words px-1 ${godMode ? 'ultra-glitch-title' : ''}`}
           >
             Exchange Skills,{' '}
             <span className="gradient-text">Grow Together</span>
