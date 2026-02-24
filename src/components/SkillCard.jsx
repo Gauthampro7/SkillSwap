@@ -148,7 +148,7 @@ export const SkillCard = ({ skill, index, onRequestTrade, onCardClick, isSaved, 
             e.stopPropagation();
             onRequestTrade?.(skill);
           }}
-          className="btn-gradient flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-white font-semibold w-full"
+          className="btn-gradient flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-semibold w-full min-h-[44px] touch-manipulation"
         >
           Request Trade
           <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />

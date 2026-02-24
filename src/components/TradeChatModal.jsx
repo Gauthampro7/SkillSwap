@@ -113,12 +113,12 @@ export function TradeChatModal({ isOpen, onClose, tradeRequest, currentUserId })
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="glass rounded-2xl w-full max-w-lg flex flex-col max-h-[85vh] overflow-hidden">
+            <div className="glass rounded-2xl w-full max-w-lg flex flex-col max-h-[85dvh] sm:max-h-[85vh] overflow-hidden mx-1 sm:mx-0">
               {/* Header */}
-              <div className="flex items-center gap-3 p-4 border-b border-theme shrink-0">
+              <div className="flex items-center gap-3 p-3 sm:p-4 border-b border-theme shrink-0">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   {otherPicture ? (
                     <img
@@ -195,7 +195,7 @@ export function TradeChatModal({ isOpen, onClose, tradeRequest, currentUserId })
                             <button
                               type="button"
                               onClick={() => copyMessage(msg)}
-                              className={`opacity-0 group-hover:opacity-100 p-1 rounded transition-opacity ${
+                              className={`opacity-70 hover:opacity-100 focus:opacity-100 group-hover:opacity-100 p-1.5 rounded min-h-[32px] min-w-[32px] inline-flex items-center justify-center transition-opacity touch-manipulation ${
                                 isMe ? 'hover:bg-white/20' : 'hover:bg-theme/10'
                               }`}
                               aria-label="Copy message"

@@ -64,7 +64,7 @@ export const SearchFilter = ({
           placeholder="Search skills..."
           value={searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="w-full pl-12 pr-4 py-4 glass rounded-xl text-theme placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-accent-theme transition-all"
+          className="w-full pl-12 pr-10 sm:pr-4 py-3.5 sm:py-4 glass rounded-xl text-theme placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-accent-theme transition-all min-h-[48px] text-base"
         />
         {searchQuery && (
           <button

@@ -37,10 +37,10 @@ export const ProfileModal = ({ isOpen, onClose, userId, currentUserId, onEditPro
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="glass rounded-2xl p-6 max-w-lg w-full relative my-8">
+            <div className="glass rounded-2xl p-4 sm:p-6 max-w-lg w-full relative my-4 sm:my-8 max-h-[90dvh] overflow-y-auto">
               <button
                 type="button"
                 onClick={onClose}

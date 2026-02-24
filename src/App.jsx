@@ -194,35 +194,35 @@ function AppContent() {
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass border-b border-theme backdrop-blur-xl relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-3"
+              className="flex items-center gap-2 sm:gap-3 min-w-0 shrink-0"
             >
-              <div className="relative">
+              <div className="relative shrink-0">
                 <div className="absolute inset-0 bg-accent-theme/20 rounded-lg blur-lg" />
-                <div className="relative bg-accent-theme/10 p-2 rounded-lg">
-                  <Sparkles className="text-accent-theme" size={24} />
+                <div className="relative bg-accent-theme/10 p-1.5 sm:p-2 rounded-lg">
+                  <Sparkles className="text-accent-theme" size={22} />
                 </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-theme">SkillSwap</h1>
-                <p className="text-xs text-theme-secondary">Exchange skills with students</p>
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-theme truncate">SkillSwap</h1>
+                <p className="text-xs text-theme-secondary hidden sm:block">Exchange skills with students</p>
               </div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-3"
+              className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0"
             >
               {isAuthenticated && (
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setView(view === 'dashboard' ? 'browse' : 'dashboard')}
-                  className={`relative flex items-center gap-2 glass px-4 py-2 rounded-lg font-medium ${
+                  className={`relative flex items-center gap-1.5 sm:gap-2 glass px-3 sm:px-4 py-2 rounded-lg font-medium text-sm sm:text-base min-h-[44px] ${
                     view === 'dashboard'
                       ? 'bg-accent-theme text-white'
                       : 'text-theme hover:bg-accent-theme/10'
@@ -254,7 +254,7 @@ function AppContent() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 relative z-10">
         {view === 'dashboard' ? (
           <Dashboard
             onGoToBrowse={() => setView('browse')}
@@ -285,7 +285,7 @@ function AppContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-5xl sm:text-6xl font-extrabold text-theme mb-4 leading-tight"
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-theme mb-4 leading-tight break-words px-1"
           >
             Exchange Skills,{' '}
             <span className="gradient-text">Grow Together</span>
@@ -304,7 +304,7 @@ function AppContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="flex items-center justify-center gap-6"
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-6"
           >
             <div className="flex items-center gap-2 glass px-4 py-2 rounded-full text-sm text-theme-secondary">
               <Sparkles size={16} className="text-accent-theme" />
@@ -377,11 +377,11 @@ function AppContent() {
           <p className="text-theme-secondary">
             {loading ? 'Loading...' : `${sortedSkills.length} ${sortedSkills.length === 1 ? 'skill' : 'skills'} found`}
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="glass px-3 py-2 rounded-lg text-theme text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-theme"
+              className="glass px-3 py-2.5 rounded-lg text-theme text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-theme min-h-[44px]"
             >
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
@@ -391,7 +391,7 @@ function AppContent() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center gap-2 glass px-4 py-2 rounded-lg text-theme hover:bg-accent-theme/10 transition-colors font-medium"
+              className="flex items-center gap-2 glass px-3 sm:px-4 py-2.5 rounded-lg text-theme hover:bg-accent-theme/10 transition-colors font-medium text-sm sm:text-base min-h-[44px]"
             >
               <Plus size={18} />
               Create Skill

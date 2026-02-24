@@ -21,7 +21,7 @@ export const LoginButton = ({ onOpenProfile }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           onClick={onOpenProfile}
-          className="flex items-center gap-2 glass px-4 py-2 rounded-lg hover:bg-accent-theme/10 transition-colors text-left"
+          className="flex items-center gap-2 glass px-3 sm:px-4 py-2.5 rounded-lg hover:bg-accent-theme/10 transition-colors text-left min-h-[44px]"
         >
           {user.user_metadata?.picture ? (
             <img
@@ -42,7 +42,7 @@ export const LoginButton = ({ onOpenProfile }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={signOut}
-          className="glass px-4 py-2 rounded-lg text-theme hover:bg-accent-theme/10 transition-colors text-sm font-medium"
+          className="glass px-3 sm:px-4 py-2.5 rounded-lg text-theme hover:bg-accent-theme/10 transition-colors text-sm font-medium min-h-[44px]"
         >
           Logout
         </motion.button>
@@ -55,10 +55,11 @@ export const LoginButton = ({ onOpenProfile }) => {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={signInWithGoogle}
-      className="flex items-center gap-2 glass px-4 py-2 rounded-lg text-theme hover:bg-accent-theme/10 transition-colors"
+      className="flex items-center gap-2 glass px-3 sm:px-4 py-2.5 rounded-lg text-theme hover:bg-accent-theme/10 transition-colors min-h-[44px]"
+      aria-label="Login with Google"
     >
-      <LogIn size={18} />
-      <span className="font-medium">Login with Google</span>
+      <LogIn size={20} className="shrink-0" />
+      <span className="font-medium hidden sm:inline">Login with Google</span>
     </motion.button>
   );
 };

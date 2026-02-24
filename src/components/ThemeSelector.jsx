@@ -21,10 +21,10 @@ export const ThemeSelector = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="glass p-3 rounded-full text-theme hover:bg-accent-theme/10 transition-colors"
+        className="glass p-2.5 sm:p-3 rounded-full text-theme hover:bg-accent-theme/10 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
         aria-label="Change theme"
       >
-        <Palette size={20} />
+        <Palette size={20} className="shrink-0" />
       </motion.button>
 
       <AnimatePresence>
@@ -36,7 +36,7 @@ export const ThemeSelector = () => {
               animate={{ opacity: 1, y: 0,  scale: 1    }}
               exit={{    opacity: 0, y: -8, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 top-13 z-50 glass rounded-2xl p-2 min-w-[170px] shadow-xl"
+              className="absolute right-0 top-full mt-2 z-50 glass rounded-2xl p-2 min-w-[170px] max-w-[calc(100vw-2rem)] shadow-xl"
             >
               <p className="text-xs font-semibold text-theme-secondary uppercase tracking-wider px-3 pt-1 pb-2">
                 Theme

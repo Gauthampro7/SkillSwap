@@ -59,10 +59,10 @@ export const EditProfileModal = ({ isOpen, onClose, onSuccess }) => {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="glass rounded-2xl p-6 max-w-md w-full relative">
+        <div className="glass rounded-2xl p-4 sm:p-6 max-w-md w-full relative my-4 max-h-[90dvh] overflow-y-auto">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-theme">Edit profile</h2>
             <button
@@ -93,7 +93,7 @@ export const EditProfileModal = ({ isOpen, onClose, onSuccess }) => {
                   value={form.university}
                   onChange={(e) => setForm((f) => ({ ...f, university: e.target.value }))}
                   placeholder="e.g. State University"
-                  className="w-full px-4 py-2.5 glass rounded-xl text-theme placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-accent-theme"
+                  className="w-full px-4 py-2.5 glass rounded-xl text-theme placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-accent-theme text-base"
                 />
               </div>
               <div>
@@ -103,7 +103,7 @@ export const EditProfileModal = ({ isOpen, onClose, onSuccess }) => {
                   value={form.location}
                   onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
                   placeholder="e.g. New York"
-                  className="w-full px-4 py-2.5 glass rounded-xl text-theme placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-accent-theme"
+                  className="w-full px-4 py-2.5 glass rounded-xl text-theme placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-accent-theme text-base"
                 />
               </div>
               <div>
@@ -113,7 +113,7 @@ export const EditProfileModal = ({ isOpen, onClose, onSuccess }) => {
                   onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
                   placeholder="A short intro or what you like to trade..."
                   rows={4}
-                  className="w-full px-4 py-2.5 glass rounded-xl text-theme placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-accent-theme resize-none"
+                  className="w-full px-4 py-2.5 glass rounded-xl text-theme placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-accent-theme resize-none text-base"
                 />
               </div>
               <div className="flex gap-3 pt-2">

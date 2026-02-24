@@ -46,10 +46,10 @@ export const RequestTradeModal = ({ isOpen, onClose, skill, onSubmit }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="glass rounded-2xl p-6 max-w-md w-full relative">
+            <div className="glass rounded-2xl p-4 sm:p-6 max-w-md w-full relative my-auto max-h-[90dvh] overflow-y-auto">
               <button
                 type="button"
                 onClick={handleClose}

@@ -77,6 +77,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  min-height: 100dvh;
 }
 
 /* Theme Classes */
@@ -201,9 +204,10 @@ body {
   box-shadow: 0 0 20px var(--glow);
 }
 
-/* Smooth scrolling */
+/* Smooth scrolling and mobile viewport */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* Custom scrollbar */

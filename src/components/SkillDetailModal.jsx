@@ -75,8 +75,8 @@ export const SkillDetailModal = ({
             className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="glass rounded-2xl p-6 max-w-lg w-full relative my-8">
-              <div className="flex items-start justify-between gap-4 mb-4">
+            <div className="glass rounded-2xl p-4 sm:p-6 max-w-lg w-full relative my-4 sm:my-8 max-h-[90dvh] overflow-y-auto mx-2 sm:mx-0">
+              <div className="flex items-start justify-between gap-2 sm:gap-4 mb-4">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${categoryColor}`}>
                     <CategoryIcon size={12} />

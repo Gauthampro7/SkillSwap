@@ -94,7 +94,7 @@ export function Dashboard({ onGoToBrowse, onRequestTrade, onUnsave, refreshSaved
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px] touch-manipulation ${
                 tab === t.id
                   ? 'bg-accent-theme text-white'
                   : 'glass text-theme hover:bg-accent-theme/10'

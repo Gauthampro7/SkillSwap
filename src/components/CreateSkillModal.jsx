@@ -63,10 +63,10 @@ export const CreateSkillModal = ({ isOpen, onClose, onSuccess }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="glass rounded-3xl p-8 max-w-md w-full relative overflow-hidden">
+            <div className="glass rounded-3xl p-4 sm:p-8 max-w-md w-full relative overflow-hidden my-4 max-h-[90dvh] overflow-y-auto">
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 text-theme-secondary hover:text-theme transition-colors"
