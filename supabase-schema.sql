@@ -163,6 +163,11 @@ CREATE TRIGGER update_trade_requests_updated_at
   BEFORE UPDATE ON public.trade_requests
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+-- Ensure status constraint allows all five values (fix for DBs created before 'completed' was added)
+ALTER TABLE public.trade_requests DROP CONSTRAINT IF EXISTS trade_requests_status_check;
+ALTER TABLE public.trade_requests ADD CONSTRAINT trade_requests_status_check
+  CHECK (status IN ('pending', 'accepted', 'declined', 'cancelled', 'completed'));
+
 -- Saved/bookmarked skills
 CREATE TABLE IF NOT EXISTS public.saved_skills (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
