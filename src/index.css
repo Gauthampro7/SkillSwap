@@ -335,3 +335,106 @@ html {
 .card-seeking {
   border-left: 3px solid rgba(234, 179, 8, 0.6);
 }
+
+/* ========== ULTRA MODE (Easter egg) ========== */
+.god-mode .bg-orb {
+  opacity: 0.28;
+  filter: blur(100px);
+  animation-duration: 12s;
+}
+
+.god-mode .bg-orb-1 { animation: orb-float-1 12s ease-in-out infinite; }
+.god-mode .bg-orb-2 { animation: orb-float-2 14s ease-in-out infinite; }
+.god-mode .bg-orb-3 { animation: orb-float-3 10s ease-in-out infinite; }
+
+.ultra-gradient-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    125deg,
+    transparent 0%,
+    rgba(99, 102, 241, 0.06) 25%,
+    rgba(168, 85, 247, 0.08) 50%,
+    rgba(6, 182, 212, 0.06) 75%,
+    transparent 100%
+  );
+  background-size: 400% 400%;
+  animation: ultra-gradient-shift 15s ease infinite;
+  mix-blend-mode: screen;
+}
+
+@keyframes ultra-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.ultra-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ultra-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  opacity: 0.4;
+  animation: ultra-float var(--duration, 5s) ease-in-out infinite;
+  animation-delay: calc(var(--delay, 0) * -1s);
+}
+
+@keyframes ultra-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(10px, -20px) scale(1.2);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-15px, 10px) scale(0.9);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translate(20px, 15px) scale(1.1);
+    opacity: 0.5;
+  }
+}
+
+.god-mode .glass-card,
+.god-mode .glass {
+  transition: box-shadow 0.5s ease, transform 0.4s ease, border-color 0.3s ease;
+}
+
+.god-mode .glass-card:hover,
+.god-mode .glass:hover {
+  box-shadow: 0 0 40px var(--glow), 0 8px 32px 0 var(--shadow);
+}
+
+.god-mode .hero-badge {
+  animation: badge-float 2s ease-in-out infinite, ultra-glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes ultra-glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px var(--glow); }
+  50% { box-shadow: 0 0 35px var(--glow), 0 0 50px var(--glow); }
+}
+
+.god-mode .gradient-text {
+  background-size: 200% 200%;
+  animation: ultra-gradient-text 8s ease infinite;
+}
+
+@keyframes ultra-gradient-text {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}

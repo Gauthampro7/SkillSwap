@@ -1,7 +1,9 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { GodModeProvider, useGodMode } from './contexts/GodModeContext';
+import { UltraModeEffects } from './components/UltraModeEffects';
 import { ThemeSelector } from './components/ThemeSelector';
 import { LoginButton } from './components/LoginButton';
 import { SearchFilter } from './components/SearchFilter';
@@ -22,6 +24,8 @@ import { useAuth } from './contexts/AuthContext';
 
 function AppContent() {
   const { isAuthenticated, user: currentUser } = useAuth();
+  const { godMode, setGodMode, toggleGodMode } = useGodMode();
+  const ultraClickTimes = useRef([]);
   const [view, setView] = useState('browse'); // 'browse' | 'dashboard'
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -185,12 +189,42 @@ function AppContent() {
     fetchSkills();
   };
 
+  const handleUltraTrigger = () => {
+    const now = Date.now();
+    const times = ultraClickTimes.current;
+    times.push(now);
+    if (times.length > 5) times.shift();
+    if (times.length === 5 && now - times[0] < 2000) {
+      ultraClickTimes.current = [];
+      toggleGodMode();
+    } else if (times.length === 5) {
+      ultraClickTimes.current = [];
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-theme transition-colors duration-300 relative">
+    <div className={`min-h-screen bg-theme transition-colors duration-300 relative ${godMode ? 'god-mode' : ''}`}>
+      {/* Ultra mode effects (dynamic bg, particles, ambient audio) */}
+      <UltraModeEffects enabled={godMode} />
+
       {/* Animated background orbs */}
       <div className="bg-orb bg-orb-1" />
       <div className="bg-orb bg-orb-2" />
       <div className="bg-orb bg-orb-3" />
+
+      {/* Ultra mode toggle pill (visible when active) */}
+      {godMode && (
+        <motion.button
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 glass px-4 py-2 rounded-full text-sm font-semibold text-theme border border-accent-theme/40 shadow-lg hover:bg-accent-theme/10 transition-colors"
+          onClick={() => setGodMode(false)}
+          aria-label="Disable Ultra mode"
+        >
+          <span className="text-accent-theme">✨</span>
+          Ultra
+        </motion.button>
+      )}
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass border-b border-theme backdrop-blur-xl relative">
@@ -201,7 +235,14 @@ function AppContent() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-2 sm:gap-3 min-w-0 shrink-0"
             >
-              <div className="relative shrink-0">
+              <div
+                className="relative shrink-0 cursor-pointer select-none"
+                onClick={handleUltraTrigger}
+                onKeyDown={(e) => e.key === 'Enter' && handleUltraTrigger()}
+                role="button"
+                tabIndex={0}
+                aria-label="SkillSwap logo"
+              >
                 <div className="absolute inset-0 bg-accent-theme/20 rounded-lg blur-lg" />
                 <div className="relative bg-accent-theme/10 p-1.5 sm:p-2 rounded-lg">
                   <Sparkles className="text-accent-theme" size={22} />
@@ -513,7 +554,9 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <AppContent />
+        <GodModeProvider>
+          <AppContent />
+        </GodModeProvider>
       </AuthProvider>
     </ThemeProvider>
   );
