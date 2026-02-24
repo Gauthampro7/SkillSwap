@@ -315,20 +315,25 @@ function AppContent() {
               <span>Free to join</span>
             </div>
             {!isAuthenticated && (
-              <motion.div
+              <motion.a
+                href="#browse-skills"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 btn-gradient text-white px-5 py-2 rounded-full text-sm font-semibold cursor-pointer"
-                onClick={() => {}}
+                className="flex items-center gap-2 btn-gradient text-white px-5 py-2 rounded-full text-sm font-semibold cursor-pointer no-underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('browse-skills')?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
                 Get started <ArrowRight size={14} />
-              </motion.div>
+              </motion.a>
             )}
           </motion.div>
         </motion.div>
 
         {/* Search and Filter */}
         <motion.div
+          id="browse-skills"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
