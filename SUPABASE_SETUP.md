@@ -119,8 +119,8 @@ Open `http://localhost:5173` and sign in with Google to verify.
 When deploying:
 
 1. Update Supabase redirect URLs:
-   - Add your production URL to Google OAuth redirect URIs
-   - Add production URL to Supabase allowed redirect URLs
+   - Add your production URL to Google OAuth redirect URIs (e.g. `https://skillswap.gautham.pw/`)
+   - Add production URL to Supabase Authentication → URL Configuration → Redirect URLs
 
 2. Set environment variables in your hosting platform:
    - `VITE_SUPABASE_URL`

@@ -68,7 +68,7 @@ An ultra-aesthetic, professional skill-exchange platform for college students bu
 npm run build
 ```
 
-The built files will be in the `dist` directory.
+The built files will be in the `dist` directory. Live site: **https://skillswap.gautham.pw/**
 
 ## Project Structure
 
